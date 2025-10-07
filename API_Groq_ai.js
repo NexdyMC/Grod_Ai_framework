@@ -40,14 +40,15 @@
     outputEl.value = "⏳ Sedang memproses...";
     
     try {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": API_KEY
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
+          model: "llama-3.1-8b-instant",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: message }
@@ -61,6 +62,11 @@
     } catch (err) {
       outputEl.value = "❌ Error: " + err.message;
     }
+    if (!response.ok) {
+    const errMsg = await response.text();
+    throw new Error(`API Error (${response.status}): ${errMsg}`);
+}
+
   }
 
   // === Ekspor ke global scope ===
